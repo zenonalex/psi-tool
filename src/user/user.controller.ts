@@ -1,14 +1,16 @@
-import { Body, Controller, HttpException, HttpStatus, Post } from '@nestjs/common';
+import { Body, Controller, HttpException, HttpStatus, Post, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './shared/user/user.service';
 import { User } from './shared/user/user';
 import { UserTypes } from './shared/user/utils/user.types';
+import { AuthGuard } from '../auth/shared/auth.guard/auth.guard';
 
 @Controller('user')
 export class UserController {
     constructor(private userService: UserService) { }
 
+    @UseGuards(AuthGuard)
     @Post()
-    async createUser(@Body() user: User): Promise<User> {
+    async createUser(@Body() user: User, @Request() req: any): Promise<User> {
         const users = await this.getAllUsers();
 
         users.forEach(function (registredUser) {
